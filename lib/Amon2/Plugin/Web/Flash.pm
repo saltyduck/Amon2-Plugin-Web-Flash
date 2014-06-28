@@ -96,7 +96,7 @@ Yoshimasa Ueno
 
 =head1 COPYRIGHT
 
-Copyright 2012- Yoshimasa Ueno
+Copyright 2014- Yoshimasa Ueno
 
 
 =head1 LICENSE
