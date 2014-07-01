@@ -10,4 +10,5 @@ XXX.t-sample
 ^MakeMaker-\d
 \.gz$
 \.cvsignore
+\.git
 ^9\d_.*\.t
