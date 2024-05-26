@@ -57,18 +57,10 @@ my $app = do {
         });
     };
 
-    get '/after' => sub {
-        my $c = shift;
-        $session_id = $c->session->{session_id};
-        $c->render('index.tx', +{
-            flash => $c->flash,
-        });
-    };
-
     get '/now' => sub {
         my $c = shift;
         $session_id = $c->session->{session_id};
-        $c->flash_now(honey => "Honey");
+        $c->flash_now(peach => "Peach");
         $c->render('index.tx', +{
             flash => $c->flash,
         });
@@ -78,6 +70,18 @@ my $app = do {
         my $c = shift;
         $session_id = $c->session->{session_id};
         $c->flash_now(honey => "Honey");
+        $c->flash_now(apple => "Apple");
+        $c->flash_discard('honey');
+        $c->render('index.tx', +{
+            flash => $c->flash,
+        });
+    };
+
+    get '/discard_all' => sub {
+        my $c = shift;
+        $session_id = $c->session->{session_id};
+        $c->flash_now(honey => "Honey");
+        $c->flash_now(apple => "Apple");
         $c->flash_discard;
         $c->render('index.tx', +{
             flash => $c->flash,
@@ -140,12 +144,21 @@ deftest 'set and get and turn' => sub {
 
 deftest 'now' => sub {
     my $cb = shift;
-    like request($cb, 'now'), qr/honey is Honey/;
+    like request($cb, 'now'), qr/peach is Peach/;
 };
 
 deftest 'discard' => sub {
     my $cb = shift;
-    unlike request($cb, 'discard'), qr/honey is Honey/;
+    my $content = request($cb, 'discard');
+    unlike $content, qr/honey is Honey/;
+    like $content, qr/apple is Apple/;
+};
+
+deftest 'discard_all' => sub {
+    my $cb = shift;
+    my $content = request($cb, 'discard_all');
+    unlike $content, qr/honey is Honey/;
+    unlike $content, qr/apple is Apple/;
 };
 
 deftest 'keep' => sub {

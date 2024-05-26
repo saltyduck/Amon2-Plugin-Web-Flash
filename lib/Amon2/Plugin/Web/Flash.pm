@@ -118,6 +118,14 @@ request.
 Unlike flash, the set data can be retrieved during the processing of
 the current request.
 
+=head2 flash_keep
+
+   $c->flash_keep('key'); # keep the data of the specified key
+   $c->flash_keep; # keeps all
+
+Keep either a specific flash data or all current flash data available
+for the next request.
+
 =head2 flash_discard
 
    $c->flash_discard('key');
