@@ -31,6 +31,14 @@ my $app = do {
         },
     );
 
+    get '/session' => sub {
+        my $c = shift;
+        $session_id = $c->session->{session_id};
+        $c->render('index.tx', +{
+            flash => $c->flash,
+        });
+    };
+
     get '/set' => sub {
         my $c = shift;
         $session_id = $c->session->{session_id};
@@ -98,95 +106,68 @@ my $app = do {
     __PACKAGE__->to_app;
 };
 
-
-subtest 'set and get and turn' => sub {
-    test_psgi
-        app => $app,
-        client => sub {
-            my $cb = shift;
-            {
-                my $res = $cb->(HTTP::Request->new(GET => "http://localhost/set"));
-                note $res->content;
-                unlike $res->content, qr/honey is Honey/;
+sub deftest($&) {
+    my ($desc, $sub) = @_;
+    subtest $desc => sub {
+        test_psgi(
+            app => $app,
+            client => sub {
+                my $cb = shift;
+                $cb->(HTTP::Request->new(GET => "http://localhost/session")); # set session_id
+                $sub->($cb);
+                done_testing;
             }
+        );
+    };
+}
 
-            {
-                my $res = $cb->(HTTP::Request->new(GET => "http://localhost/use?$session_key=$session_id"));
-                note $res->content;
-                like $res->content, qr/honey is Honey/;
-            }
+sub request {
+    my ($cb, $action) = @_;
 
-            {
-                my $res = $cb->(HTTP::Request->new(GET => "http://localhost/after?$session_key=$session_id"));
-                note $res->content;
-                unlike $res->content, qr/honey is Honey/;
-            }
-        };
+    my $res = $cb->(HTTP::Request->new(GET => "http://localhost/$action?$session_key=$session_id"));
+    note $res->content;
+    return $res->content;
+}
+
+##### Tests starts here ####
+
+deftest 'set and get and turn' => sub {
+    my $cb = shift;
+    unlike request($cb, 'set'), qr/honey is Honey/;
+    like request($cb, 'use'), qr/honey is Honey/;
+    unlike request($cb, 'use'), qr/honey is Honey/;
 };
 
-subtest 'now' => sub {
-    test_psgi
-        app => $app,
-        client => sub {
-            my $cb = shift;
-            {
-                my $res = $cb->(HTTP::Request->new(GET => "http://localhost/now"));
-                note $res->content;
-                like $res->content, qr/honey is Honey/;
-            }
-        };
+deftest 'now' => sub {
+    my $cb = shift;
+    like request($cb, 'now'), qr/honey is Honey/;
 };
 
-subtest 'discard' => sub {
-    test_psgi
-        app => $app,
-        client => sub {
-            my $cb = shift;
-            {
-                my $res = $cb->(HTTP::Request->new(GET => "http://localhost/discard"));
-                note $res->content;
-                unlike $res->content, qr/honey is Honey/;
-            }
-        };
+deftest 'discard' => sub {
+    my $cb = shift;
+    unlike request($cb, 'discard'), qr/honey is Honey/;
 };
 
-
-subtest 'keep' => sub {
-    test_psgi
-        app => $app,
-        client => sub {
-            my $cb = shift;
-            {
-                $cb->(HTTP::Request->new(GET => "http://localhost/set?$session_key=$session_id"));
-                $cb->(HTTP::Request->new(GET => "http://localhost/keep?$session_key=$session_id"));
-                my $res = $cb->(HTTP::Request->new(GET => "http://localhost/use?$session_key=$session_id"));
-                note $res->content;
-                like $res->content, qr/honey is Honey/;
-                unlike $res->content, qr/apple is Apple/;
-            }
-        };
+deftest 'keep' => sub {
+    my $cb = shift;
+    request($cb, 'set');
+    request($cb, 'keep');
+    my $content = request($cb, 'use');
+    like $content, qr/honey is Honey/;
+    unlike $content, qr/apple is Apple/;
 };
 
-subtest 'keep_all' => sub {
-    test_psgi
-        app => $app,
-        client => sub {
-            my $cb = shift;
-            {
-                $cb->(HTTP::Request->new(GET => "http://localhost/set?$session_key=$session_id"));
-                $cb->(HTTP::Request->new(GET => "http://localhost/keep_all?$session_key=$session_id"));
-                my $res = $cb->(HTTP::Request->new(GET => "http://localhost/use?$session_key=$session_id"));
-                note $res->content;
-                like $res->content, qr/honey is Honey/;
-                like $res->content, qr/apple is Apple/;
-                $res = $cb->(HTTP::Request->new(GET => "http://localhost/use?$session_key=$session_id"));
-                note $res->content;
-                unlike $res->content, qr/honey is Honey/;
-                unlike $res->content, qr/apple is Apple/;
-            }
-        };
+deftest 'keep_all' => sub {
+    my $cb = shift;
+    request($cb, 'set');
+    request($cb, 'keep_all');
+    my $content = request($cb, 'use');
+    like $content, qr/honey is Honey/;
+    like $content, qr/apple is Apple/;
+    $content = request($cb, 'use');
+    unlike $content, qr/honey is Honey/;
+    unlike $content, qr/apple is Apple/;
 };
-
 
 done_testing;
 
