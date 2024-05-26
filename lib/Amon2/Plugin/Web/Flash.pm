@@ -38,6 +38,17 @@ sub init {
         return $value;
     });
 
+    Amon2::Util::add_method($webpkg, flash_keep => sub {
+        my ($self, $flash_key) = @_;
+        unless ($flash_key) {
+            for my $k (keys %$flash) {
+                $self->flash($k => $self->flash($k));
+            }
+            return;
+        }
+        $self->flash($flash_key => $self->flash($flash_key));
+    });
+
     Amon2::Util::add_method($webpkg, flash_discard => sub {
         my ($self, $flash_key, $value) = @_;
         unless ($flash_key) {

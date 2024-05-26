@@ -35,6 +35,7 @@ my $app = do {
         my $c = shift;
         $session_id = $c->session->{session_id};
         $c->flash(honey => "Honey");
+        $c->flash(apple => "Apple");
         $c->render('index.tx', +{
             flash => $c->flash,
         });
@@ -70,6 +71,25 @@ my $app = do {
         $session_id = $c->session->{session_id};
         $c->flash_now(honey => "Honey");
         $c->flash_discard;
+        $c->render('index.tx', +{
+            flash => $c->flash,
+        });
+    };
+
+    get '/keep' => sub {
+        my $c = shift;
+        $session_id = $c->session->{session_id};
+        $c->flash_keep('honey');
+        $c->render('index.tx', +{
+            flash => $c->flash,
+        });
+    };
+
+    get '/keep_all' => sub {
+        my $c = shift;
+        $session_id = $c->session->{session_id};
+        $c->flash_now(honey => "Honey");
+        $c->flash_keep;
         $c->render('index.tx', +{
             flash => $c->flash,
         });
@@ -126,6 +146,43 @@ subtest 'discard' => sub {
                 my $res = $cb->(HTTP::Request->new(GET => "http://localhost/discard"));
                 note $res->content;
                 unlike $res->content, qr/honey is Honey/;
+            }
+        };
+};
+
+
+subtest 'keep' => sub {
+    test_psgi
+        app => $app,
+        client => sub {
+            my $cb = shift;
+            {
+                $cb->(HTTP::Request->new(GET => "http://localhost/set?$session_key=$session_id"));
+                $cb->(HTTP::Request->new(GET => "http://localhost/keep?$session_key=$session_id"));
+                my $res = $cb->(HTTP::Request->new(GET => "http://localhost/use?$session_key=$session_id"));
+                note $res->content;
+                like $res->content, qr/honey is Honey/;
+                unlike $res->content, qr/apple is Apple/;
+            }
+        };
+};
+
+subtest 'keep_all' => sub {
+    test_psgi
+        app => $app,
+        client => sub {
+            my $cb = shift;
+            {
+                $cb->(HTTP::Request->new(GET => "http://localhost/set?$session_key=$session_id"));
+                $cb->(HTTP::Request->new(GET => "http://localhost/keep_all?$session_key=$session_id"));
+                my $res = $cb->(HTTP::Request->new(GET => "http://localhost/use?$session_key=$session_id"));
+                note $res->content;
+                like $res->content, qr/honey is Honey/;
+                like $res->content, qr/apple is Apple/;
+                $res = $cb->(HTTP::Request->new(GET => "http://localhost/use?$session_key=$session_id"));
+                note $res->content;
+                unlike $res->content, qr/honey is Honey/;
+                unlike $res->content, qr/apple is Apple/;
             }
         };
 };
