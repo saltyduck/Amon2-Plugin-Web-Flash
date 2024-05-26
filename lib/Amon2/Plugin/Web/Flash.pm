@@ -66,29 +66,53 @@ __END__
 
 =head1 NAME
 
-RoR like flash
+Ruby on Rails flash for Amon2
 
 =head1 SYNOPSIS
 
-   # in your Web.pm
+   # In your Web.pm
    __PACKAGE__->load_plugins(
         'Web::Flash', # must be loaded *BEFORE* HTTP Session
         'Web::HTTPSession', 
    );
 
+   # In your controller
+   $c->flash(success => 'ok'); # Set a data exposed in the next request
+
+   # At the controller of the next request
+   $c->flash('success') # You got 'ok'
+
+=head1 DESCRIPTION
+
+This plugin provides a way to pass data between request. Anything
+placed in flash is exposed in the next request and then deleted.
+
+This is a clone of Ruby on Rails flash.
+
+=head1 METHODS
+
+=head2 flash
+
    $c->flash(key => 'value'); # set
    $c->flash('key') # get
    my $hashref = $c->flash; # get all key-value pair
 
+The data you set can be retrieved during the processing of the next
+request.
+
+=head2 flash_now
+
    $c->flash_now(key => 'value');
+
+Unlike flash, the set data can be retrieved during the processing of
+the current request.
+
+=head2 flash_discard
 
    $c->flash_discard('key');
    $c->flash_discard; # discard all
 
-
-=head1 DESCRIPTION
-
-Import from Ruby on Rails.
+Delete the flash data set in the current request.
 
 =head1 AUTHOR
 
@@ -110,5 +134,7 @@ warranty. In no event shall the author be held liable for any damages
 arising from the use of the software.
 
 =head1 SEE ALSO
+
+L<Amon2>
 
 =cut
