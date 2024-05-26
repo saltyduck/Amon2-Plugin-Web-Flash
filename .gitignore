@@ -1,0 +1,8 @@
+blib/
+pm_to_blib
+*.bak
+*~
+#*#
+Makefile
+MYMETA.*
+!META.json
