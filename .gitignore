@@ -1,8 +1,10 @@
+/Amon2-Plugin-Web-Flash-*
 blib/
 pm_to_blib
-*.bak
-*~
-#*#
 Makefile
 MYMETA.*
 !META.json
+/.prove
+*.bak
+*~
+#*#
