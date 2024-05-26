@@ -1,6 +1,7 @@
 Revision history for Perl extension Amon2::Plugin::Web::Flash
 
 {{$NEXT}}
+	- Just change contributers in META.json
 
 0.02  2024-05-26 12:24:11 JST
 	- Refine docs.
