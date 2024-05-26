@@ -60,7 +60,7 @@
          "web" : "https://github.com/saltyduck/Amon2-Plugin-Web-Flash"
       }
    },
-   "version" : "0.01",
+   "version" : "0.02",
    "x_contributors" : [
       "saltyduck <saltyduck@gmail.com>",
       "Yoshimasa Ueno <ueno@hanshichi.tech.isac.co.jp>"

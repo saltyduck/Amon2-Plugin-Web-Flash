@@ -2,6 +2,9 @@ Revision history for Perl extension Amon2::Plugin::Web::Flash
 
 {{$NEXT}}
 
+0.02  2024-05-26 12:24:11 JST
+	- Refine docs.
+
 0.01  Sat Jun 28 11:02:40 2014
         - original version
 
