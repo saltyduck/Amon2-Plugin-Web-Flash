@@ -66,7 +66,7 @@ __END__
 
 =head1 NAME
 
-Ruby on Rails flash for Amon2
+Amon2::Plugin::Web::Flash - Ruby on Rails flash for Amon2
 
 =head1 SYNOPSIS
 
@@ -122,10 +122,10 @@ Yoshimasa Ueno
 
 Copyright 2014- Yoshimasa Ueno
 
-
 =head1 LICENSE
 
-Same as Perl.
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
 
 =head1 NO WARRANTY
 
