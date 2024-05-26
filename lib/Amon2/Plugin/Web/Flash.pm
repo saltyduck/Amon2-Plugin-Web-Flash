@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use utf8;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use Amon2::Util;
 
