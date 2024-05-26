@@ -38,13 +38,18 @@
       "runtime" : {
          "requires" : {
             "Amon2" : "0",
-            "Amon2::Plugin::Web::HTTPSession" : "0"
+            "Amon2::Plugin::Web::HTTPSession" : "0",
+            "perl" : "5.008"
          }
       },
       "test" : {
          "requires" : {
             "Amon2::Lite" : "0",
-            "HTML::StickyQuery" : "0"
+            "HTML::StickyQuery" : "0",
+            "HTTP::Session::State::URI" : "0",
+            "Plack::Request" : "0",
+            "Plack::Test" : "0",
+            "Test::Requires" : "0"
          }
       }
    },

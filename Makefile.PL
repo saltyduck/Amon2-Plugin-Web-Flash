@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-
+use 5.008;
 
 use ExtUtils::MakeMaker;
 
@@ -14,6 +14,7 @@ my %WriteMakefileArgs = (
   },
   "DISTNAME" => "Amon2-Plugin-Web-Flash",
   "LICENSE" => "perl",
+  "MIN_PERL_VERSION" => "5.008",
   "NAME" => "Amon2::Plugin::Web::Flash",
   "PREREQ_PM" => {
     "Amon2" => 0,
@@ -21,7 +22,11 @@ my %WriteMakefileArgs = (
   },
   "TEST_REQUIRES" => {
     "Amon2::Lite" => 0,
-    "HTML::StickyQuery" => 0
+    "HTML::StickyQuery" => 0,
+    "HTTP::Session::State::URI" => 0,
+    "Plack::Request" => 0,
+    "Plack::Test" => 0,
+    "Test::Requires" => 0
   },
   "VERSION" => "0.05",
   "test" => {
@@ -34,7 +39,11 @@ my %FallbackPrereqs = (
   "Amon2" => 0,
   "Amon2::Lite" => 0,
   "Amon2::Plugin::Web::HTTPSession" => 0,
-  "HTML::StickyQuery" => 0
+  "HTML::StickyQuery" => 0,
+  "HTTP::Session::State::URI" => 0,
+  "Plack::Request" => 0,
+  "Plack::Test" => 0,
+  "Test::Requires" => 0
 );
 
 
