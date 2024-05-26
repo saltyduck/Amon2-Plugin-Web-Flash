@@ -7,7 +7,7 @@ Amon2::Plugin::Web::Flash - Ruby on Rails flash for Amon2
     # In your Web.pm
     __PACKAGE__->load_plugins(
          'Web::Flash', # must be loaded *BEFORE* HTTP Session
-         'Web::HTTPSession', 
+         'Web::HTTPSession',
     );
 
     # In your controller

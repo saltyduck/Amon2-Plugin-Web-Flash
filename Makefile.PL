@@ -23,7 +23,7 @@ my %WriteMakefileArgs = (
     "Amon2::Lite" => 0,
     "HTML::StickyQuery" => 0
   },
-  "VERSION" => "0.03",
+  "VERSION" => "0.04",
   "test" => {
     "TESTS" => "t/*.t"
   }
